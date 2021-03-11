@@ -167,13 +167,15 @@ namespace RestaurantWeb
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.Address)
                     .IsRequired()
                     .HasColumnType("ntext");
 
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                
 
                 entity.Property(e => e.Phone)
                     .IsRequired()

@@ -1,0 +1,81 @@
+﻿@model IEnumerable<RestaurantWeb.Order>
+
+@{
+    ViewData["Title"] = " Активні замовлення";
+}
+
+<h1>Активні замовлення "@ViewBag.ProductName" </h1>
+
+<p>
+    @Html.ActionLink("Зробити нове замовлення", "Create", new {productId=ViewBag.ProductId})
+    <a asp-action="Create"> asp-route-id="@ViewBag.ProductId">Зробити нове замовлення</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Product)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Provider)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Amount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PlanReturn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FactReturn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Restaurant)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Amount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlanReturn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FactReturn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Provider.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Restaurant.Address)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
