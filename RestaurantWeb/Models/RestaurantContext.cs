@@ -40,7 +40,7 @@ namespace RestaurantWeb
 
             modelBuilder.Entity<Dish>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("Id");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -61,7 +61,7 @@ namespace RestaurantWeb
 
             modelBuilder.Entity<Employee>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("Id");
 
                 entity.Property(e => e.DateOfBirth)
                     .HasColumnType("date")
@@ -98,7 +98,7 @@ namespace RestaurantWeb
 
             modelBuilder.Entity<Order>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("Id");
 
                 entity.Property(e => e.Date).HasColumnType("date");
 
@@ -132,7 +132,7 @@ namespace RestaurantWeb
 
             modelBuilder.Entity<Product>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("Id");
 
                 entity.Property(e => e.BestBefore)
                     .HasColumnType("date")
@@ -145,7 +145,7 @@ namespace RestaurantWeb
 
             modelBuilder.Entity<Provider>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("Id");
 
                 entity.Property(e => e.Address)
                     .IsRequired()
@@ -191,7 +191,7 @@ namespace RestaurantWeb
             {
                 entity.ToTable("Using");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("Id");
 
                 entity.HasOne(d => d.Dish)
                     .WithMany(p => p.Usings)

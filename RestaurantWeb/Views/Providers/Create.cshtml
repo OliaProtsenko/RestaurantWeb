@@ -1,4 +1,4 @@
-﻿@model RestaurantWeb.Product
+﻿@model RestaurantWeb.Provider
 
 @{
     ViewData["Title"] = "Create";
@@ -6,7 +6,7 @@
 
 <h1>Create</h1>
 
-<h4>Product</h4>
+<h4>Provider</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -19,14 +19,14 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="QuantityAvailabale" class="control-label"></label>
-                <input asp-for="QuantityAvailabale" class="form-control" />
-                <span asp-validation-for="QuantityAvailabale" class="text-danger"></span>
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BestBefore" class="control-label"></label>
-                <input asp-for="BestBefore" class="form-control" />
-                <span asp-validation-for="BestBefore" class="text-danger"></span>
+                <label asp-for="Phone" class="control-label"></label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

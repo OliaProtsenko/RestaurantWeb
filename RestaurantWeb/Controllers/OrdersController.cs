@@ -19,14 +19,14 @@ namespace RestaurantWeb.Controllers
         }
 
         // GET: Orders
-        public async Task<IActionResult> Index(int?id,string ?name)
+        public async Task<IActionResult> Index(int?id,string? name)
 
         {
-            //var restaurantContext = _context.Orders.Include(o => o.Product).Include(o => o.Provider).Include(o => o.Restaurant);
-            if (id == null) return RedirectToAction("Products", "Index");
+            var restaurantContext = _context.Orders.Include(o => o.Product).Include(o => o.Provider).Include(o => o.Restaurant);
+            if (id == null) return View(await restaurantContext.ToListAsync());
             ViewBag.ProductId = id;
             ViewBag.ProductName = name;
-            var productOrder = _context.Orders.Include(o => o.ProductId == id).Include(o => o.Product);
+            var productOrder = _context.Orders.Where(o => o.ProductId == id).Include(o => o.Product);
             return View(await productOrder.ToListAsync());
         }
 
@@ -48,15 +48,17 @@ namespace RestaurantWeb.Controllers
                 return NotFound();
             }
 
-            return View(order);
+            return RedirectToAction("Index", "Providers", new { id = order.ProviderId });
         }
 
         // GET: Orders/Create
-        public IActionResult Create()
+        public IActionResult Create(int productId)
         {
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id");
-            ViewData["ProviderId"] = new SelectList(_context.Providers, "Id", "Address");
-            ViewData["RestaurantId"] = new SelectList(_context.Restaurants, "Id", "Address");
+            ViewBag.ProductId = productId;
+            ViewBag.ProductName = _context.Products.Where(c => c.Id == productId).FirstOrDefault().Name;
+            //ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id");
+             ViewData["ProviderId"] = new SelectList(_context.Providers, "Id", "Name");
+             ViewData["RestaurantId"] = new SelectList(_context.Restaurants, "Id", "Name");
             return View();
         }
 
@@ -65,19 +67,38 @@ namespace RestaurantWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int id, [Bind("Id,Date,Price,Amount,ProviderId,ProductId,RestaurantId,Status,PlanReturn,FactReturn")] Order order)
+        public async Task<IActionResult> Create(int productId, [Bind("Id,Date,Price,Amount,ProviderId,ProductId,RestaurantId,Status,PlanReturn,FactReturn")] Order order)
         {
-            order.ProductId = id;
+            order.ProductId = productId;
+            var todayDate = DateTime.Now;
+            if (order.Date < todayDate)
+            {
+                ModelState.AddModelError("Date", "Некорректна дата");
+            }
+            if (order.PlanReturn < order.Date)
+            {
+                ModelState.AddModelError("PlanReturn", "Некорректна дата повернення");
+            }
+            if (order.Amount <= 0)
+            {
+                ModelState.AddModelError("Amount", "Некорректна кількість");
+            }
+            if(order.Price<0)
+            {
+                ModelState.AddModelError("Price", "Некорректна вартість");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(order);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "Orders", new { Id = id, name = _context.Products.Where(p => p.Id == id).FirstOrDefault().Name });
+                return RedirectToAction("Index", "Orders", new { Id = productId, name = _context.Products.Where(p => p.Id == productId).FirstOrDefault().Name });
+                    //_context.Products.Where(p => p.Id == id).FirstOrDefault().Name });
             }
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", order.ProductId);
+         //   ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", order.ProductId);
             ViewData["ProviderId"] = new SelectList(_context.Providers, "Id", "Address", order.ProviderId);
             ViewData["RestaurantId"] = new SelectList(_context.Restaurants, "Id", "Address", order.RestaurantId);
-            return RedirectToAction("Index", "Orders", new { Id = id, name = _context.Products.Where(p => p.Id == id).FirstOrDefault().Name });
+            return RedirectToAction("Index", "Orders", new { Id = productId, name = _context.Products.Where(p => p.Id == productId).FirstOrDefault().Name });
         }
             // GET: Orders/Edit/5
             public async Task<IActionResult> Edit(int? id)

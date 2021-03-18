@@ -20,7 +20,7 @@ namespace RestaurantWeb.Controllers
 
         // GET: Products
         public async Task<IActionResult> Index(int? id)
-        { if (id == null) return RedirectToAction("Usings", "Index");
+        { if (id == null) return View(await _context.Products.ToListAsync());
             ViewBag.Id = id;
             var productinfo = _context.Products.Where(b => b.Id == id).Include(b => b.Usings);
             return View(await productinfo.ToListAsync());
@@ -41,7 +41,7 @@ namespace RestaurantWeb.Controllers
                 return NotFound();
             }
 
-            return RedirectToAction("Index","Orders",new { id = product.Id, name = product.Name });
+            return RedirectToAction("Index","Orders",new { id = product.Id,name =product.Name });
         }
 
         // GET: Products/Create
@@ -57,6 +57,18 @@ namespace RestaurantWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,QuantityAvailabale,BestBefore")] Product product)
         {
+            if (string.IsNullOrEmpty(product.Name))
+            {
+                ModelState.AddModelError("Name", "Некорректне ім'я");
+            }
+            if(product.QuantityAvailabale<0)
+            {
+                ModelState.AddModelError("QuantityAvailabale", "Некорректна кількість");
+            }
+            if (product.BestBefore < DateTime.Now)
+            {
+                ModelState.AddModelError("BestBefore", "Некорректний срок годності");
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(product);

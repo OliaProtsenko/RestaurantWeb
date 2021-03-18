@@ -49,10 +49,12 @@ namespace RestaurantWeb.Controllers
         }
 
         // GET: Usings/Create
-        public IActionResult Create()
+        public IActionResult Create(int dishId)
         {
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id");
-            ViewData["DishId"] = new SelectList(_context.Dishes, "Id", "Name");
+            ViewBag.DishId = dishId;
+            ViewBag.DishName = _context.Dishes.Where(d => d.Id == dishId).FirstOrDefault().Name;
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name");
+           // ViewData["DishId"] = new SelectList(_context.Dishes, "Id", "Name");
             
             return View();
         }
@@ -62,8 +64,12 @@ namespace RestaurantWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int dishId,[Bind("Id,Amount(g),ProductId,DishId")] Using @using)
-        {
+        public async Task<IActionResult> Create(int dishId,[Bind("Id,Amount,ProductId,DishId")] Using @using)
+        {   if (@using.Amount <= 0)
+            {
+                ModelState.AddModelError("Amount", "Некорректна кількість");
+            }
+            
             @using.DishId = dishId;
             if (ModelState.IsValid)
             {
@@ -72,7 +78,7 @@ namespace RestaurantWeb.Controllers
                 return RedirectToAction("Index", "Usings", new { id = dishId, name = _context.Dishes.Where(c => c.Id == dishId).FirstOrDefault().Name }) ;
             }
 
-            ViewData["DishId"] = new SelectList(_context.Dishes, "Id", "Name", @using.DishId);
+           // ViewData["DishId"] = new SelectList(_context.Dishes, "Id", "Name", @using.DishId);
             ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", @using.ProductId);
             return RedirectToAction("Index", "Usings", new { id = dishId, name = _context.Dishes.Where(c => c.Id == dishId).FirstOrDefault().Name });
         }

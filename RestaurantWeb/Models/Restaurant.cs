@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.ComponentModel.DataAnnotations;
 #nullable disable
 
 namespace RestaurantWeb
@@ -15,9 +15,13 @@ namespace RestaurantWeb
         }
 
         public int Id { get; set; }
+        [Display(Name ="Назва")]
         public string Name { get; set; }
+        [Display(Name = "Адреса")]
         public string Address { get; set; }
+        [Display(Name = "Телефон")]
         public string Phone { get; set; }
+        [Display(Name = "Сайт")]
         public string Site { get; set; }
 
         public virtual ICollection<Dish> Dishes { get; set; }

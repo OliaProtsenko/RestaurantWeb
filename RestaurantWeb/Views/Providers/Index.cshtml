@@ -1,13 +1,13 @@
-﻿@model IEnumerable<RestaurantWeb.Product>
+﻿@model IEnumerable<RestaurantWeb.Provider>
 
 @{
-    ViewData["Title"] = "Продукти";
+    ViewData["Title"] = "Постачальники";
 }
 
-<h1>Продукти</h1>
+<h1>Постачальники</h1>
 
 <p>
-    <a asp-action="Create">Додати  новий продукт</a>
+    <a asp-action="Create">Додати нового постачальника</a>
 </p>
 <table class="table">
     <thead>
@@ -16,10 +16,10 @@
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.QuantityAvailabale)
+                @Html.DisplayNameFor(model => model.Address)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BestBefore)
+                @Html.DisplayNameFor(model => model.Phone)
             </th>
             <th></th>
         </tr>
@@ -32,14 +32,14 @@
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.QuantityAvailabale)
+                    @Html.DisplayFor(modelItem => item.Address)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.BestBefore)
+                    @Html.DisplayFor(modelItem => item.Phone)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Активні замовлення</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Деталі</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
                 </td>
             </tr>
@@ -57,10 +57,10 @@
 
         function drawChart() {
 
-            $.get('/api/Charts/JsonData', function(JsonData) {
-                data = google.visualization.arrayToDataTable(JsonData, false);
+            $.get('/api/Charts/ProviderOrders', function(ProviderOrders) {
+                data = google.visualization.arrayToDataTable(ProviderOrders, false);
                 var option = {
-                    title: "Співвідношення кількості замовлень та продуктів",
+                    title: "Співвідношення кількості замовлень у постачальників",
                     width: 500,
                     height: 400
                 };
@@ -70,4 +70,3 @@
         }
     </script>
 }
-
