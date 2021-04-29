@@ -7,16 +7,18 @@
 <h1>Активні замовлення "@ViewBag.ProductName" </h1>
 
 <p>
-    @Html.ActionLink("Зробити нове замовлення", "Create", new {productId=@ViewBag.ProductId})
- 
+    @Html.ActionLink("Зробити нове замовлення", "Create", new { productId = @ViewBag.ProductId })
+
 </p>
+
+
 <table class="table">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Product)
             </th>
-           
+
             <th>
                 @Html.DisplayNameFor(model => model.Date)
             </th>
@@ -32,41 +34,42 @@
             <th>
                 @Html.DisplayNameFor(model => model.FactReturn)
             </th>
-           
+
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Product.Name)
-            </td>
-            <td>
-                @Html.DisplayNameFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.Name)
+                </td>
+                <td>
+                    @Html.DisplayNameFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Amount)
+                </td>
 
-            <td>
-                @Html.DisplayFor(modelItem => item.PlanReturn)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FactReturn)
-            </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlanReturn)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FactReturn)
+                </td>
 
 
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>|
-                <a asp-action="Details" asp-route-id="@item.Id">Постачальник</a> 
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>|
+                    <a asp-action="Details" asp-route-id="@item.Id">Постачальник</a>
 
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

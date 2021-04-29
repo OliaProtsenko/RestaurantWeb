@@ -10,7 +10,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using RestaurantWeb.Models;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 namespace RestaurantWeb
 {
     public class Startup
@@ -28,6 +29,13 @@ namespace RestaurantWeb
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<RestaurantContext>(options => options.UseSqlServer(connection));
             services.AddControllersWithViews();
+
+            string connectionIdentity = Configuration.GetConnectionString("IdentityConnection");
+            services.AddDbContext<IdentityContext>(options => options.UseSqlServer(connectionIdentity));
+            services.AddControllersWithViews();
+
+            services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<IdentityContext>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,14 +55,14 @@ namespace RestaurantWeb
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Dishes}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

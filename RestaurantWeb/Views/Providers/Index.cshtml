@@ -9,6 +9,29 @@
 <p>
     <a asp-action="Create">Додати нового постачальника</a>
 </p>
+<div>
+    <h3>Оберіть exel-файл для заватаження</h3>
+    @using (Html.BeginForm("Import", "Providers", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-excel" }))
+    {
+        <div>
+            Завантажте Excel-файл:
+            <input type="file" name="fileExcel" id="fileExcel" />
+            <div>
+                <input type="submit" value="Завантажити" />
+            </div>
+
+        </div>
+    }
+</div>
+ <div>
+        <h3>Завантаження інформації в файл</h3>
+        <a asp-action="Export">Завантажити</a>
+    </div>
+
+
+
+
+
 <table class="table">
     <thead>
         <tr>
@@ -50,14 +73,14 @@
     <div id="chart1"></div>
 </div>
 @section scripts{
-    <script type "text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script>
-    google.charts.load('current', { 'packages': ['corechart'] });
-    google.charts.setOnLoadCallback(drawChart);
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
 
         function drawChart() {
 
-            $.get('/api/Charts/ProviderOrders', function(ProviderOrders) {
+            $.get('/api/Charts/ProviderOrders', function (ProviderOrders) {
                 data = google.visualization.arrayToDataTable(ProviderOrders, false);
                 var option = {
                     title: "Співвідношення кількості замовлень у постачальників",
