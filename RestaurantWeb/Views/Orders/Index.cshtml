@@ -5,71 +5,78 @@
 }
 
 <h1>Активні замовлення "@ViewBag.ProductName" </h1>
+@if (User.Identity.IsAuthenticated)
+{
+    <p>
+        @Html.ActionLink("Зробити нове замовлення", "Create", new { productId = @ViewBag.ProductId })
 
-<p>
-    @Html.ActionLink("Зробити нове замовлення", "Create", new { productId = @ViewBag.ProductId })
-
-</p>
+    </p>
 
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Product)
-            </th>
-
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PlanReturn)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FactReturn)
-            </th>
-
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Product.Name)
-                </td>
-                <td>
-                    @Html.DisplayNameFor(modelItem => item.Date)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Amount)
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product)
+                </th>
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.PlanReturn)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FactReturn)
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Amount)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PlanReturn)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FactReturn)
+                </th>
 
-
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>|
-                    <a asp-action="Details" asp-route-id="@item.Id">Постачальник</a>
-
-                </td>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Product.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Amount)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PlanReturn)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FactReturn)
+                    </td>
+
+
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>|
+                        <a asp-action="Details" asp-route-id="@item.Id">Постачальник</a>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <a asp-controller="Account" asp-action="Login">Вхід</a>
+    <a asp-controller="Account" asp-action="Register">Реєстація</a>
+}

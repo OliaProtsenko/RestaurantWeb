@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RestaurantWeb;
-
+using Microsoft.AspNetCore.Authorization;
 namespace RestaurantWeb.Controllers
-{
+{   
     public class UsingsController : Controller
     {
         private readonly RestaurantContext _context;
@@ -20,7 +20,7 @@ namespace RestaurantWeb.Controllers
 
         // GET: Usings
         public async Task<IActionResult> Index(int? id,string? name)
-        {   if (id == null) return RedirectToAction("Dishes", "Index");
+        {   if (id == null) return View(_context.Usings.ToListAsync());
             ViewBag.DishId = id;
             ViewBag.DishName = name;
             var productForDish = _context.Usings.Where(b => b.DishId == id).Include(b => b.Product).Include(b=>b.Dish);

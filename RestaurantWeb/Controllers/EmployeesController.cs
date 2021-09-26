@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RestaurantWeb;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RestaurantWeb.Controllers
 {
@@ -30,6 +31,7 @@ namespace RestaurantWeb.Controllers
         }
 
         // GET: Employees/Details/5
+        
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -58,9 +60,10 @@ namespace RestaurantWeb.Controllers
         // POST: Employees/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Surname,Phone,Position,DateOfBirth,Salary,HomeAddress,RestaurantId")] Employee employee)
+        public async Task<IActionResult> Create([Bind("Id,Image,Name,Surname,Phone,Position,DateOfBirth,Salary,HomeAddress,RestaurantId")] Employee employee)
         {
             var todaysDate = DateTime.Today;
 
@@ -107,7 +110,7 @@ namespace RestaurantWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Surname,Phone,Position,DateOfBirth,Salary,HomeAddress,RestaurantId")] Employee employee)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Image,Name,Surname,Phone,Position,DateOfBirth,Salary,HomeAddress,RestaurantId")] Employee employee)
         {
             if (id != employee.Id)
             {

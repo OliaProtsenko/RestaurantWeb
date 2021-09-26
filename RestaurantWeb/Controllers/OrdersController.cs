@@ -25,7 +25,7 @@ namespace RestaurantWeb.Controllers
         public async Task<IActionResult> Index(int?id,string? name)
 
         {
-            var restaurantContext = _context.Orders.Include(o => o.Product).Include(o => o.Provider).Include(o => o.Restaurant);
+            var restaurantContext = _context.Orders.Include(o => o.Product);
             if (id == null) return View(await restaurantContext.ToListAsync());
             ViewBag.ProductId = id;
             ViewBag.ProductName = name;

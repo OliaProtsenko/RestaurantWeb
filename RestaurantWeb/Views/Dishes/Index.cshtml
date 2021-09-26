@@ -5,11 +5,11 @@
 }
 
 <h1>Меню</h1>
-
-<p>
+@if(User.IsInRole("admin"))
+{<p>
     <a asp-action="Create">Додати  нову страву</a>
    
-</p>
+</p>}
 <table class="table">
     <thead>
         <tr>
@@ -55,12 +55,18 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Restaurant.Name)
             </td>
+            @if (User.IsInRole("admin"))
+            {
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>|
+                </td>
+}
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>|
-                <a asp-action="Details" asp-route-id="@item.Id">Інгредієнти</a> 
+                <a asp-action="Details" asp-route-id="@item.Id">Інгредієнти</a>
+             </td>
 
-            </td>
+
         </tr>
 }
     </tbody>

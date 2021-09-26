@@ -154,8 +154,16 @@ namespace RestaurantWeb.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var provider = await _context.Providers.FindAsync(id);
-            _context.Providers.Remove(provider);
-            await _context.SaveChangesAsync();
+            var orders = _context.Orders.Where(o => o.ProviderId == id).ToList();
+            if (orders.Count() != 0)
+            {
+
+            }
+            else
+            {
+                _context.Providers.Remove(provider);
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(Index));
         }
 
@@ -276,16 +284,23 @@ namespace RestaurantWeb.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
- 
 
-        public IActionResult  Export(Order criteria)
+        public async Task<IActionResult> Export()
+        {
+            ViewData["ProviderLists"] = new SelectList(_context.Providers, "Id", "Name");
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult  Export([Bind("Id")]Provider criteria)
+        
         {
             using (XLWorkbook workbook = new XLWorkbook(XLEventTracking.Disabled))
             {
               //  ViewBag.ProviderLists = new SelectList(_context.Providers.Where(l => l.Orders.Count > 0), "Id", "Name");
               // var orders = _context.Providers.Where(w => w.Id == criteria.ProviderId).Include("Orders").ToList();
 
-                var orders = _context.Providers.Where(w=>w.Name=="OvoProd").Include("Orders").ToList();
+                var orders = _context.Providers.Where(w=>w.Id==criteria.Id).Include("Orders").ToList();
                 //тут, для прикладу ми пишемо усі книжки з БД, в своїх проектах ТАК НЕ РОБИТИ (писати лише вибрані)
                 foreach (var c in orders)
                 {
@@ -314,17 +329,7 @@ namespace RestaurantWeb.Controllers
                         worksheet.Cell(i + 2, 7).Value = books[i].Status;
                         
 
-                       /* var ab = _context.AuthorsBooks.Where(a => a.BookId == books[i].Id).Include("Author").ToList();
-                        //більше 4-ох нікуди писати
-                        int j = 0;
-                        foreach (var a in ab)
-                        {
-                            if (j < 5)
-                            {
-                                worksheet.Cell(i + 2, j + 2).Value = a.Author.Name;
-                                j++;
-                            }
-                        }*/
+                     
 
                     }
                 }
@@ -341,11 +346,7 @@ namespace RestaurantWeb.Controllers
                 }
             }
         }
-        private void FillSelectLists()
-        {
-            // new SelectList(_context.Providers.Where(l => l.Orders.Count()>0), "Id", "Name");
-            ViewBag.ProductList = new SelectList(_context.Products.Where(c => c.Orders.Count() > 0), "Id", "Name");
-        }
+        
 
 
 

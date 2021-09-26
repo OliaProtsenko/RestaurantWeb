@@ -20,7 +20,8 @@ namespace RestaurantWeb
         public int? QuantityAvailabale { get; set; }
         [Display(Name = "Вжити до")]
         public DateTime? BestBefore { get; set; }
-
+       
+      
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Using> Usings { get; set; }
     }

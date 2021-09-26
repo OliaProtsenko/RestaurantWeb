@@ -30,20 +30,30 @@ namespace RestaurantWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = new User { Email = model.Email, UserName = model.Email, Year = model.Year };
-                // додаємо користувача
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                if (DateTime.Today.Year - model.Year < 16)
                 {
-                    // установка кукі
-                    await _signInManager.SignInAsync(user, false);
-                    return RedirectToAction("Index", "Home");
+                    ModelState.AddModelError(string.Empty, "Некорректний рік народження");
+
                 }
                 else
                 {
-                    foreach (var error in result.Errors)
+                    User user = new User { Email = model.Email, UserName = model.Email, Year = model.Year };
+                    // додаємо користувача
+                    var result = await _userManager.CreateAsync(user, model.Password);
+                    if (result.Succeeded)
                     {
-                        ModelState.AddModelError(string.Empty, error.Description);
+                        
+           
+                    // установка кукі
+                    await _signInManager.SignInAsync(user, false);
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
                     }
                 }
             }

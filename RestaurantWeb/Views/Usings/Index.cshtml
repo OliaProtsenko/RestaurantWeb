@@ -5,45 +5,51 @@
 }
 
 <h1>Інгредієнти </h1>
+@if (User.Identity.IsAuthenticated)
+{
+    <p>
+        @Html.ActionLink("Додати новий інгредієнт", "Create", new { dishId = @ViewBag.DishId })
 
-<p>
-    @Html.ActionLink("Додати новий інгредієнт", "Create",new { dishId = @ViewBag.DishId })
- 
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Product)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Dish)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Product.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Dish.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>|
-                <a asp-action="Details" asp-route-id="@item.Id">Деталі про продукт</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Amount)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Dish)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Product.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Amount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Dish.Name)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>|
+                        <a asp-action="Details" asp-route-id="@item.Id">Деталі про продукт</a>
 
-            </td>
-        </tr>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
-    </tbody>
-</table>
+else
+{ <a asp-controller="Account" asp-action="Login">Вхід</a>
+    <a asp-controller="Account" asp-action="Register">Реєстація</a>}

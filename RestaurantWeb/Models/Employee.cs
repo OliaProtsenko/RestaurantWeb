@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 #nullable disable
 
 namespace RestaurantWeb
@@ -8,6 +9,8 @@ namespace RestaurantWeb
     public partial class Employee
     {
         public int Id { get; set; }
+        [Display(Name = "Фото")]
+        public string Image { get; set; }
         [Display(Name="Ім'я")]
         public string Name { get; set; }
         [Display(Name = "Прізвище")]
@@ -19,9 +22,11 @@ namespace RestaurantWeb
         [Display(Name = "Дата народження")]
         public DateTime DateOfBirth { get; set; }
         [Display(Name = "Заробітна плата")]
+        //[Authorize(Roles = "admin")]
         public int Salary { get; set; }
         [Display(Name = "Домашня адреса")]
         public string HomeAddress { get; set; }
+
         public int RestaurantId { get; set; }
         [Display(Name = "Ресторан")]
         public virtual Restaurant Restaurant { get; set; }
