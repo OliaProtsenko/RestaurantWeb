@@ -107,7 +107,7 @@ namespace RestaurantWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Amount(g),ProductId,DishId")] Using @using)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Amount,ProductId,DishId")] Using @using)
         {
             if (id != @using.Id)
             {
@@ -132,7 +132,7 @@ namespace RestaurantWeb.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return View(_context.Usings.ToListAsync());
             }
             ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", @using.ProductId);
             ViewData["DishId"] = new SelectList(_context.Dishes, "Id", "Name", @using.DishId);

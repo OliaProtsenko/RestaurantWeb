@@ -42,7 +42,7 @@ namespace RestaurantWeb
             {
                 entity.Property(e => e.Id).HasColumnName("Id");
 
-                entity.Property(e => e.Name)
+                entity.Property(e => e.Name).HasColumnName("Name")
                     .IsRequired()
                     .HasMaxLength(50);
 
@@ -72,7 +72,7 @@ namespace RestaurantWeb
                     .HasColumnType("ntext")
                     .HasColumnName("Home_address");
 
-                entity.Property(e => e.Name)
+                entity.Property(e => e.Name).HasColumnName("Name")
                     .IsRequired()
                     .HasMaxLength(50);
 
@@ -138,7 +138,7 @@ namespace RestaurantWeb
                     .HasColumnType("date")
                     .HasColumnName("Best_before");
 
-                entity.Property(e => e.Name).HasMaxLength(50);
+                entity.Property(e => e.Name).HasMaxLength(50).HasColumnName("Name");
 
                 entity.Property(e => e.QuantityAvailabale).HasColumnName("Quantity_availabale");
             });
@@ -151,7 +151,7 @@ namespace RestaurantWeb
                     .IsRequired()
                     .HasColumnType("ntext");
 
-                entity.Property(e => e.Name)
+                entity.Property(e => e.Name).HasColumnName("Name")
                     .IsRequired()
                     .HasMaxLength(50);
 
@@ -165,9 +165,9 @@ namespace RestaurantWeb
             {
                 entity.ToTable("Restaurant");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("Id");
 
-                entity.Property(e => e.Name)
+                entity.Property(e => e.Name).HasColumnName("Name")
                     .IsRequired()
                     .HasMaxLength(50);
 
@@ -175,7 +175,8 @@ namespace RestaurantWeb
                     .IsRequired()
                     .HasColumnType("ntext");
 
-                
+                entity.Property(e => e.GeoLat);
+                entity.Property(e => e.GeoLong);
 
                 entity.Property(e => e.Phone)
                     .IsRequired()
@@ -183,8 +184,10 @@ namespace RestaurantWeb
                     .IsFixedLength(true);
 
                 entity.Property(e => e.Site)
-                    .IsRequired()
                     .HasMaxLength(50);
+                entity.Property(e => e.GeoLong);
+                entity.Property(e => e.GeoLat);
+
             });
 
             modelBuilder.Entity<Using>(entity =>

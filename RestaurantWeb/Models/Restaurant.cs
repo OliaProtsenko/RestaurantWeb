@@ -23,7 +23,8 @@ namespace RestaurantWeb
         public string Phone { get; set; }
         [Display(Name = "Сайт")]
         public string Site { get; set; }
-
+        public string? GeoLong { get; set; }
+        public string? GeoLat { get; set; }
         public virtual ICollection<Dish> Dishes { get; set; }
         public virtual ICollection<Employee> Employees { get; set; }
         public virtual ICollection<Order> Orders { get; set; }

@@ -11,7 +11,7 @@
         <a asp-action="Create">Додати нового постачальника</a>
     </p>
     <div>
-        <h3>Оберіть exel-файл для заватаження</h3>
+        <h3>Оберіть Excel-файл для заватаження</h3>
         @using (Html.BeginForm("Import", "Providers", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-excel" }))
         {
             <div>

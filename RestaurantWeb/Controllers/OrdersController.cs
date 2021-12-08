@@ -12,6 +12,98 @@ using RestaurantWeb;
 
 namespace RestaurantWeb.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
+    public class OrdersApiController : ControllerBase
+    {
+        private readonly RestaurantContext _context;
+        public OrdersApiController(RestaurantContext context)
+        {
+            _context = context;
+        }
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+        {
+            return await _context.Orders.ToListAsync();
+        }
+
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Order>> GetOrder(int id)
+        {
+            var order = await _context.Orders.FirstOrDefaultAsync(m => m.Id == id);
+
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            return order;
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutOrder(int id, Order order)
+        {
+            if (id != order.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(order).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!OrderExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // POST: api/OrdersApi
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Order>> PostArtist(Order order)
+        {
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+        }
+
+        // DELETE: api/OrdersApi/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteOrder(int id)
+        {
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            _context.Orders.Remove(order);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool OrderExists(int id)
+        {
+            return _context.Orders.Any(e => e.Id == id);
+        }
+
+
+    }
     public class OrdersController : Controller
     {
         private readonly RestaurantContext _context;
@@ -74,7 +166,7 @@ namespace RestaurantWeb.Controllers
         {
             order.ProductId = productId;
             var todayDate = DateTime.Now;
-            if (order.Date < todayDate)
+            if (order.Date > todayDate)
             {
                 ModelState.AddModelError("Date", "Некорректна дата");
             }
@@ -133,6 +225,24 @@ namespace RestaurantWeb.Controllers
             {
                 return NotFound();
             }
+            var todayDate = DateTime.Now;
+            if (order.Date > todayDate)
+            {
+                ModelState.AddModelError("Date", "Некорректна дата");
+            }
+            if (order.PlanReturn < order.Date)
+            {
+                ModelState.AddModelError("PlanReturn", "Некорректна дата повернення");
+            }
+            if (order.Amount <= 0)
+            {
+                ModelState.AddModelError("Amount", "Некорректна кількість");
+            }
+            if (order.Price < 0)
+            {
+                ModelState.AddModelError("Price", "Некорректна вартість");
+            }
+
 
             if (ModelState.IsValid)
             {
@@ -190,6 +300,42 @@ namespace RestaurantWeb.Controllers
             _context.Orders.Remove(order);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+        [HttpGet]
+        public async Task<IActionResult> Search(string term,int type)
+        {
+            try
+            {
+                switch (type)
+                {
+                    case 0:
+                        {
+                            
+                            var models = _context.Restaurants.Where(a => a.Name.Contains(term))
+                                            .Select(a => new { label = a.Name, value = a.Id })
+                                            .Distinct().ToList();
+                            return Ok(models);
+                        }
+                    case 1: {
+                            var models = _context.Providers.Where(a => a.Name.Contains(term))
+                                          .Select(a => new { label = a.Name, value = a.Id })
+                                          .Distinct().ToList();
+                            return Ok(models);
+                        }
+                    case 2:
+                        {
+                            var models = _context.Products.Where(a => a.Name.Contains(term))
+                                                                     .Select(a => new { label = a.Name, value = a.Id })
+                                                                     .Distinct().ToList();
+                            return Ok(models);
+                        }
+                    default:throw new  Exception("Wrong field");
+            }
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         private bool OrderExists(int id)

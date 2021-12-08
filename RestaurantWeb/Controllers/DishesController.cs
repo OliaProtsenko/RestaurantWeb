@@ -9,7 +9,101 @@ using RestaurantWeb;
 
 namespace RestaurantWeb.Controllers
 {
-    public class DishesController : Controller
+
+    [Route("api/[controller]")]
+    [ApiController]
+    public class DishesApiController : ControllerBase
+    {
+        private readonly RestaurantContext _context;
+        public DishesApiController(RestaurantContext context)
+        {
+            _context = context;
+        }
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Dish>>> GetDishes()
+        {
+            return await _context.Dishes.ToListAsync();
+        }
+
+        
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Dish>> GetDish(int id)
+        {
+            var dish = await _context.Dishes.FirstOrDefaultAsync(m => m.Id == id);
+
+
+            if (dish == null)
+            {
+                return NotFound();
+            }
+
+            return dish;
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutDish(int id, Dish dish)
+        {
+            if (id != dish.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(dish).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!DishExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        
+        // POST: api/DishesApi
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Dish>> PostArtist(Dish dish)
+        {
+            _context.Dishes.Add(dish);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetDish", new { id = dish.Id }, dish);
+        }
+
+        // DELETE: api/DishesApi/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteDish(int id)
+        {
+            var dish = await _context.Dishes.FindAsync(id);
+            if (dish == null)
+            {
+                return NotFound();
+            }
+
+            _context.Dishes.Remove(dish);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool DishExists(int id)
+        {
+            return _context.Dishes.Any(e => e.Id == id);
+        }
+
+
+    }
+        public class DishesController : Controller
     {
         private readonly RestaurantContext _context;
 
@@ -24,9 +118,25 @@ namespace RestaurantWeb.Controllers
             var restaurantContext = _context.Dishes.Include(d => d.Restaurant);
             return View(await restaurantContext.ToListAsync());
         }
-
-        // GET: Dishes/Details/5
         public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var dish = await _context.Dishes
+                .Include(e => e.Restaurant)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (dish == null)
+            {
+                return NotFound();
+            }
+
+            return View(dish);
+        }
+        // GET: Dishes/Details/5
+        public async Task<IActionResult> Ingredients(int? id)
         {
             if (id == null)
             {
@@ -59,7 +169,7 @@ namespace RestaurantWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Type,Weight,Price,Remarks,RestaurantId")] Dish dish)
+        public async Task<IActionResult> Create([Bind("Id,Image,Name,Type,Weight,Price,Remarks,RestaurantId")] Dish dish)
         {
           //  dish.RestaurantId =restaurantId;
             if (ModelState.IsValid)
@@ -94,7 +204,7 @@ namespace RestaurantWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Type,Weight,Price,Remarks,RestaurantId")] Dish dish)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Image,Name,Type,Weight,Price,Remarks,RestaurantId")] Dish dish)
         {
             if (id != dish.Id)
             {
@@ -155,6 +265,24 @@ namespace RestaurantWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpGet]
+        public async Task<IActionResult>Search(string term)
+        {
+            try
+            {
+                Console.WriteLine("start searching");
+                // string term = HttpContext.Request.Query["term"].ToString();
+                var models = _context.Restaurants.Where(a => a.Name.Contains(term))
+                                .Select(a => new { label = a.Name,value=a.Id })
+                                .Distinct().ToList();
+                Console.WriteLine("end searching"+models.Count.ToString());
+
+                return Ok(models);
+            }
+            catch {
+                return BadRequest();
+            }
+        }
         private bool DishExists(int id)
         {
             return _context.Dishes.Any(e => e.Id == id);

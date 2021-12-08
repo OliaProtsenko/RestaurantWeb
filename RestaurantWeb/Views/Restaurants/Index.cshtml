@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<RestaurantWeb.Restaurant>
 
+
 @{
     ViewData["Title"] = "Ресторани";
 }
@@ -9,7 +10,92 @@
 <p>
     <a asp-action="Create">Додати новий</a>
 </p>
+<head>
+   <!-- <script src="~/Scripts/jquery-2.1.1.js"></script>-->
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+</head>
+<html>
+<body>
+    <div id="MapDiv" style="width: 500px; height: 500px">
+    </div>
 
+    @section scripts{
+
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJOVHPB82cv_ELdigCEYuS30ZpkNVtEcs"></script>
+        <script type="text/javascript">
+
+            $.ajax({
+                url: 'api/RestaurantsApi',
+                type: 'GET',
+                success: function (data) {
+                    //create a blank array
+                    var markers = [];
+
+                    //loop the list of addresses returned from Ajax request
+                    $.each(data, function (index, item) {
+                        //create a blank array of address
+                        var marker = {};
+                       
+                        //fill data
+                        marker["title"] = item.Name;
+                        marker["lat"] = parseFloat(item.geoLat);
+                        marker["lng"] = parseFloat(item.geoLong);
+                        //  marker["description"] = item.Description;
+
+                        //push the current marker details in markers array
+                        markers.push(marker);
+                    })
+
+                    //call Map function with all markers passed as list of arrays
+                    initializeMap(markers);
+
+                }
+            });
+            
+
+            function initializeMap(markers) {
+                //you can check your marker data in console
+                console.log(markers);
+                //Create Google map options
+                var GoogleMapOptions = {
+                    center: new google.maps.LatLng(markers[0].lat, markers[0].lng),
+                    zoom: 10,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+
+
+                //create a variable of InfoWindow type to show data on clicking map icon
+                var infoWindow = new google.maps.InfoWindow();
+                var map = new google.maps.Map(document.getElementById("MapDiv"), GoogleMapOptions);
+
+
+                //loop through each marker data
+                for (i = 0; i < markers.length; i++) {
+                    var data = markers[i]
+                    //set lat long of current marker
+                    var myLatlng = new google.maps.LatLng(data.lat, data.lng);
+
+                    var marker = new google.maps.Marker({
+                        position: myLatlng,
+                        map: map,
+                        title: data.title
+                    });
+
+                    (function (marker, data) {
+                        // add a on marker click event
+                        google.maps.event.addListener(marker, "click", function (e) {
+                            //show description
+                            infoWindow.setContent(data.description);
+                            infoWindow.open(map, marker);
+                        });
+                    })(marker, data);
+                }
+            }
+
+        </script>
+    }
+</body>
+</html>
 <table class="table">
     <thead>
         <tr>
@@ -25,31 +111,34 @@
             <th>
                 @Html.DisplayNameFor(model => model.Site)
             </th>
+            
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Site)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>|
-                <a asp-action="Details" asp-route-id="@item.Id">Працівники</a> 
+        @foreach (var item in Model)
+        {
+            <tr>
+                
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Site)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>|
+                    <a asp-action="Details" asp-route-id="@item.Id">Працівники</a>
 
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

@@ -9,9 +9,114 @@ using Microsoft.EntityFrameworkCore;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Http;
 using RestaurantWeb;
+using System.Web;
+//using System.Web.Mvc;
 
 namespace RestaurantWeb.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
+    public class RestaurantsApiController : Controller
+    {
+        private readonly RestaurantContext _context;
+        public RestaurantsApiController(RestaurantContext context)
+        {
+            _context = context;
+        }
+        [HttpGet]
+        public JsonResult GetRestaurants()
+        {
+            // создадим список данных
+            List<Restaurant> stations = _context.Restaurants.ToList();
+         
+
+            return Json(stations);
+        }
+    
+
+        /*[HttpGet]
+        public async Task<ActionResult<IEnumerable<Restaurant>>> GetRestaurants()
+        {
+            return await _context.Restaurants.ToListAsync();
+        }*/
+
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Restaurant>> GetRestaurant(int id)
+        {
+            var restaurant = await _context.Restaurants.FirstOrDefaultAsync(m => m.Id == id);
+
+
+            if (restaurant == null)
+            {
+                return NotFound();
+            }
+
+            return restaurant;
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutRestaurant(int id, Restaurant restaurant)
+        {
+            if (id != restaurant.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(restaurant).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!RestaurantExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // POST: api/RestaurantsApi
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Restaurant>> PostArtist(Restaurant restaurant)
+        {
+            _context.Restaurants.Add(restaurant);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetRestaurant", new { id = restaurant.Id }, restaurant);
+        }
+
+        // DELETE: api/RestaurantsApi/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRestaurant(int id)
+        {
+            var restaurant = await _context.Restaurants.FindAsync(id);
+            if (restaurant == null)
+            {
+                return NotFound();
+            }
+
+            _context.Restaurants.Remove(restaurant);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool RestaurantExists(int id)
+        {
+            return _context.Restaurants.Any(e => e.Id == id);
+        }
+
+
+    }
     public class RestaurantsController : Controller
     {
         private readonly RestaurantContext _context;
@@ -56,7 +161,7 @@ namespace RestaurantWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Address,Phone,Site")] Restaurant restaurant)
+        public async Task<IActionResult> Create([Bind("Id,Name,Address,Phone,Site,GeoLong,GeoLat")] Restaurant restaurant)
         {
             if (ModelState.IsValid)
             {
@@ -88,7 +193,7 @@ namespace RestaurantWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Address,Phone,Site")] Restaurant restaurant)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Address,Phone,Site,GeoLong,GeoLat")] Restaurant restaurant)
         {
             if (id != restaurant.Id)
             {

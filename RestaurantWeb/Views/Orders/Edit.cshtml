@@ -30,18 +30,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="ProviderId" class="control-label"></label>
-                <select asp-for="ProviderId" class="form-control" asp-items="ViewBag.ProviderId"></select>
+                <input asp-for="Provider" class="form-control" type="text" id="searchInputProvider"></>
                 <span asp-validation-for="ProviderId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ProductId" class="control-label"></label>
-                <select asp-for="ProductId" class="form-control" asp-items="ViewBag.ProductId"></select>
+                <input asp-for="ProductId" class="form-control" type="text" id="searchInputProduct"></>
                 <span asp-validation-for="ProductId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="RestaurantId" class="control-label"></label>
-                <select asp-for="RestaurantId" class="form-control" asp-items="ViewBag.RestaurantId"></select>
-                <span asp-validation-for="RestaurantId" class="text-danger"></span>
+                <input asp-for="RestaurantId" class="form-control" type="text" id="searchInputRestaurant"></>
             </div>
             <div class="form-group">
                 <label asp-for="Status" class="control-label"></label>
@@ -71,4 +70,78 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $("#searchInputRestaurant").autocomplete({
+                source:function (request, response) {
+                          $.ajax({
+                              url: '@Url.Action("Search","Orders")',
+                              dataType: "json",
+                              type:"GET",
+                              data: { term: $("#searchInputRestaurant").val(),type:0 },
+                              success: function (data) {
+                                  response($.map(data, function (item) {
+                                      return { label: item.label, value:item.value };
+                                  }));
+                              },
+                              error: function (xhr, status, error) {
+                                  alert("Error");
+                              }
+                          });
+                      }
+                      });
+        })
+
+    </script>
+    <script>
+        $(document).ready(function () {
+
+            $("#searchInputProvider").autocomplete({
+                source:function (request, response) {
+                          $.ajax({
+                              url: '@Url.Action("Search","Orders")',
+                              dataType: "json",
+                              type:"GET",
+                              data: { term: $("#searchInputProvider").val(),type:1 },
+                              success: function (data) {
+                                  response($.map(data, function (item) {
+                                      return { label: item.label, value:item.value };
+                                  }));
+                              },
+                              error: function (xhr, status, error) {
+                                  alert("Error");
+                              }
+                          });
+                      }
+                      });
+        })
+
+    </script>
+    <script>
+        $(document).ready(function () {
+
+            $("#searchInputProduct").autocomplete({
+                source:function (request, response) {
+                          $.ajax({
+                              url: '@Url.Action("Search","Orders")',
+                              dataType: "json",
+                              type:"GET",
+                              data: { term: $("#searchInputProduct").val(),type:2 },
+                              success: function (data) {
+                                  response($.map(data, function (item) {
+                                      return { label: item.label, value:item.value };
+                                  }));
+                              },
+                              error: function (xhr, status, error) {
+                                  alert("Error");
+                              }
+                          });
+                      }
+                      });
+        })
+
+    </script>
 }

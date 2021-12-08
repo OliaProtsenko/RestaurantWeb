@@ -14,6 +14,8 @@ namespace RestaurantWeb
         }
 
         public int Id { get; set; }
+        [Display(Name = "Фото")]
+        public string Image { get; set; }
         [Required(ErrorMessage ="Поле не повинно бути порожнім")]
         [Display(Name="Страва")]
         public string Name { get; set; }
@@ -31,7 +33,7 @@ namespace RestaurantWeb
         
         public int RestaurantId { get; set; }
         [Display(Name = "Ресторан")]
-        [Required(ErrorMessage = "Поле не повинно бути порожнім")]
+    
         public virtual Restaurant Restaurant { get; set; }
         public virtual ICollection<Using> Usings { get; set; }
     }
